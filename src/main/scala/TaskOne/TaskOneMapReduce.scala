@@ -4,23 +4,21 @@ package TaskOne
 
 import com.srikanth.cs441.CommonUtil.GetConfigRef
 import com.srikanth.cs441.CommonUtil.GetConfigRef.{getDesignatedRegexPattern, getLogMessageTypes, getLogTimeFormatRegex}
-import org.apache.hadoop.io.{IntWritable, LongWritable, Text}
-import org.apache.hadoop.mapred.{MapReduceBase, Mapper, OutputCollector, Reporter}
+import org.apache.hadoop.conf.*
+import org.apache.hadoop.fs.Path
+import org.apache.hadoop.io.*
+import org.apache.hadoop.util.*
+import org.apache.hadoop.mapred.*
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConverters.*
-import scala.collection.immutable.ListMap
-import scala.util.{Failure, Success, Try}
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.util
 import java.util.Date
 import scala.util.matching.Regex
-import scala.util.{Failure, Success, Try}
-
-
-object TaskOneMapper:
-
-  class TaskOneMapper extends MapReduceBase with Mapper[LongWritable, Text, Text, IntWritable]:
-    private final val one = new IntWritable (1)
+object  TaskOneMapReduce {
+  class TaskOneMapper extends MapReduceBase with Mapper[LongWritable, Text, Text, IntWritable] :
+    private final val one = new IntWritable(1)
     private val logger = LoggerFactory.getLogger(getClass)
     private val config = GetConfigRef("mapReduceTaskOne") match {
       case Some(value) => value
@@ -55,10 +53,33 @@ object TaskOneMapper:
     end getPreDefinedTimeInterval
 
     private def checkTimeInterval(intervalStartTime: Date, intervalEndTime: Date, logTimeStamp: Date): Boolean =
-      logTimeStamp.compareTo(intervalStartTime)>=0 && intervalEndTime.compareTo(logTimeStamp) >=0
+      logTimeStamp.compareTo(intervalStartTime) >= 0 && intervalEndTime.compareTo(logTimeStamp) >= 0
     end checkTimeInterval
 
-    private def checkRegexPattern(line: String ,regexPattern : Regex): Boolean =
+    private def checkRegexPattern(line: String, regexPattern: Regex): Boolean =
       regexPattern.findFirstIn(line).isDefined
     end checkRegexPattern
 
+  class TaskOneReducer extends MapReduceBase with Reducer[Text, IntWritable, Text, IntWritable] :
+    override def reduce(key: Text, values: util.Iterator[IntWritable], output: OutputCollector[Text, IntWritable], reporter: Reporter): Unit =
+      val sum = values.asScala.reduce((valueOne, valueTwo) => new IntWritable(valueOne.get() + valueTwo.get()))
+      output.collect(key, new IntWritable(sum.get()))
+
+  @main def runMapReduce(inputPath: String, outputPath: String) =
+    val conf: JobConf = new JobConf(this.getClass)
+    conf.setJobName("MapReduceTask1")
+    //conf.set("fs.defaultFS", "hdfs://localhost:9000")
+    conf.set("fs.defaultFS", "local")
+    conf.set("mapreduce.job.maps", "1")
+    conf.set("mapreduce.job.reduces", "1")
+    conf.setOutputKeyClass(classOf[Text])
+    conf.setOutputValueClass(classOf[IntWritable])
+    conf.setMapperClass(classOf[TaskOneMapper])
+    conf.setCombinerClass(classOf[TaskOneReducer])
+    conf.setReducerClass(classOf[TaskOneReducer])
+    conf.setInputFormat(classOf[TextInputFormat])
+    conf.setOutputFormat(classOf[TextOutputFormat[Text, IntWritable]])
+    FileInputFormat.setInputPaths(conf, new Path(inputPath))
+    FileOutputFormat.setOutputPath(conf, new Path(outputPath))
+    JobClient.runJob(conf)
+}
