@@ -4,6 +4,8 @@ package CommonUtil
 import com.typesafe.config.{Config, ConfigFactory}
 import org.slf4j.LoggerFactory
 
+import java.util.Date
+import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
 
 object GetConfigRef :
@@ -14,6 +16,14 @@ object GetConfigRef :
     case Failure(exception) => logger.error(s"Failed to retrieve config entry $confEntry for reason $exception");None
     case Success(_) => Some(config)
   }
+
+  def checkTimeInterval(intervalStartTime: Date, intervalEndTime: Date, logTimeStamp: Date): Boolean =
+    logTimeStamp.compareTo(intervalStartTime) >= 0 && intervalEndTime.compareTo(logTimeStamp) >= 0
+  end checkTimeInterval
+
+  def checkRegexPattern(line: String, regexPattern: Regex): Boolean =
+    regexPattern.findFirstIn(line).isDefined
+  end checkRegexPattern
 
   def getDesignatedRegexPattern: String =
     val intervalTimeFrame = config.getString(s"generic.DesignatedRegexPattern")
