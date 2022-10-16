@@ -32,25 +32,25 @@ object TaskThreeMapReduce :
       val sum = values.asScala.reduce((valueOne, valueTwo) => new IntWritable(valueOne.get() + valueTwo.get()))
       output.collect(key, new IntWritable(sum.get()))
 
-
-  @main def runMapReduce(inputPath: String, outputPath: String) =
-    val conf: JobConf = new JobConf(this.getClass)
-    conf.setJobName("MapReduceTask4")
-    //conf.set("fs.defaultFS", "hdfs://localhost:9000")
-    //conf.set("fs.defaultFS", "local")
-    conf.set("mapreduce.job.maps", "1")
-    conf.set("mapreduce.job.reduces", "1")
-    conf.set("mapred.textoutputformat.separator", ",");
-    conf.setOutputKeyClass(classOf[Text])
-    conf.setOutputValueClass(classOf[IntWritable])
-    conf.setMapperClass(classOf[TaskThreeMapper])
-    conf.setCombinerClass(classOf[TaskThreeReducer])
-    conf.setReducerClass(classOf[TaskThreeReducer])
-    conf.setInputFormat(classOf[TextInputFormat])
-    conf.setOutputFormat(classOf[TextOutputFormat[Text, IntWritable]])
-    FileInputFormat.setInputPaths(conf, new Path(inputPath))
-    FileOutputFormat.setOutputPath(conf, new Path(outputPath))
-    JobClient.runJob(conf)
+//
+//  @main def runMapReduce(inputPath: String, outputPath: String) =
+//    val conf: JobConf = new JobConf(this.getClass)
+//    conf.setJobName("MapReduceTask4")
+//    //conf.set("fs.defaultFS", "hdfs://localhost:9000")
+//    //conf.set("fs.defaultFS", "local")
+//    conf.set("mapreduce.job.maps", "1")
+//    conf.set("mapreduce.job.reduces", "1")
+//    conf.set("mapred.textoutputformat.separator", ",");
+//    conf.setOutputKeyClass(classOf[Text])
+//    conf.setOutputValueClass(classOf[IntWritable])
+//    conf.setMapperClass(classOf[TaskThreeMapper])
+//    conf.setCombinerClass(classOf[TaskThreeReducer])
+//    conf.setReducerClass(classOf[TaskThreeReducer])
+//    conf.setInputFormat(classOf[TextInputFormat])
+//    conf.setOutputFormat(classOf[TextOutputFormat[Text, IntWritable]])
+//    FileInputFormat.setInputPaths(conf, new Path(inputPath))
+//    FileOutputFormat.setOutputPath(conf, new Path(outputPath))
+//    JobClient.runJob(conf)
 
 
 
