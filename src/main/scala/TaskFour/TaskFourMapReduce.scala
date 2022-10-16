@@ -1,7 +1,10 @@
 package com.srikanth.cs441
 package TaskFour
 
-import CommonUtil.GetConfigRef.{checkRegexPattern, getLogMessageTypes}
+import CommonUtil.GetConfigRef.{ getLogMessageTypes}
+
+import com.srikanth.cs441.CommonUtil.CommonMethods.checkRegexPattern
+
 import scala.collection.JavaConverters.*
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{IntWritable, LongWritable, Text}

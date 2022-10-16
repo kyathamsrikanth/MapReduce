@@ -17,14 +17,6 @@ object GetConfigRef :
     case Success(_) => Some(config)
   }
 
-  def checkTimeInterval(intervalStartTime: Date, intervalEndTime: Date, logTimeStamp: Date): Boolean =
-    logTimeStamp.compareTo(intervalStartTime) >= 0 && intervalEndTime.compareTo(logTimeStamp) >= 0
-  end checkTimeInterval
-
-  def checkRegexPattern(line: String, regexPattern: Regex): Boolean =
-    regexPattern.findFirstIn(line).isDefined
-  end checkRegexPattern
-
   def getDesignatedRegexPattern: String =
     val intervalTimeFrame = config.getString(s"generic.DesignatedRegexPattern")
     intervalTimeFrame

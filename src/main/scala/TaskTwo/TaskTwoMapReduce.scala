@@ -3,8 +3,8 @@ package TaskTwo
 
 import CommonUtil.GetConfigRef
 
-import com.srikanth.cs441.CommonUtil.GetConfigRef.{checkRegexPattern, checkTimeInterval, getDesignatedRegexPattern, getLogMessageTypes, getLogTimeFormatRegex}
-import com.srikanth.cs441.TaskOne.TaskOneMapReduce.{TaskOneMapper, TaskOneReducer}
+import com.srikanth.cs441.CommonUtil.CommonMethods.{checkRegexPattern, checkTimeInterval}
+import com.srikanth.cs441.CommonUtil.GetConfigRef.{getDesignatedRegexPattern, getLogTimeFormatRegex}
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{IntWritable, LongWritable, Text}
 import org.apache.hadoop.mapred.{FileInputFormat, FileOutputFormat, JobClient, JobConf, MapReduceBase, Mapper, OutputCollector, Reducer, Reporter, TextInputFormat, TextOutputFormat}
@@ -58,7 +58,7 @@ object TaskTwoMapReduce:
     end getPreDefinedTimeInterval
 
 
-    private def getTimeBucketInterval(intervalStartTime: Date,intervalEndTime: Date, logTimeStamp: Date,TimeIntervalLength : Integer): Tuple2[String, String] =
+    def getTimeBucketInterval(intervalStartTime: Date,intervalEndTime: Date, logTimeStamp: Date,TimeIntervalLength : Integer): Tuple2[String, String] =
       val timeDiff  = (logTimeStamp.getTime - intervalStartTime.getTime)/(60 * 1000)
       val bucketNumber =  timeDiff/TimeIntervalLength
       val startTimeBucketInterval = Date.from(intervalStartTime.toInstant.plus(Duration.ofMinutes(bucketNumber * TimeIntervalLength)))
@@ -87,8 +87,6 @@ object TaskTwoMapReduce:
   class TaskTwoMapperTwo extends MapReduceBase with Mapper[LongWritable, Text, LongWritable, Text] :
     //private final val one = new IntWritable(1)
 
-
-
     @throws[IOException]
     override def map(key: LongWritable, value: Text, output: OutputCollector[LongWritable, Text], reporter: Reporter): Unit =
       val mapperOutput = value.toString.split(',')
@@ -102,35 +100,3 @@ object TaskTwoMapReduce:
     override def reduce(key: LongWritable, values: util.Iterator[Text], output: OutputCollector[Text, LongWritable], reporter: Reporter): Unit =
       val positiveCount = new LongWritable(key.get() * -1)
       values.asScala.foreach(value => {output.collect(value, positiveCount)})
-
-//
-//  @main def runMapReduce(inputPath: String, outputPath: String) =
-//    val conf: JobConf = new JobConf(this.getClass)
-//    conf.setJobName("MapReduceTask2")
-//    //conf.set("fs.defaultFS", "hdfs://localhost:9000")
-//    //conf.set("fs.defaultFS", "local")
-//    conf.set("mapreduce.job.maps", "1")
-//    conf.set("mapreduce.job.reduces", "1")
-//    conf.set("mapred.textoutputformat.separator", ",");
-//    conf.setOutputKeyClass(classOf[Text])
-//    conf.setOutputValueClass(classOf[IntWritable])
-//    conf.setMapperClass(classOf[TaskTwoMapperOne])
-//    conf.setCombinerClass(classOf[TaskTwoReducerOne])
-//    conf.setReducerClass(classOf[TaskTwoReducerOne])
-//    conf.setInputFormat(classOf[TextInputFormat])
-//    conf.setOutputFormat(classOf[TextOutputFormat[Text, IntWritable]])
-//    FileInputFormat.setInputPaths(conf, new Path(inputPath))
-//    FileOutputFormat.setOutputPath(conf, new Path(outputPath+"_JOB1Output"))
-//    JobClient.runJob(conf)
-//    val conf2: JobConf = new JobConf(this.getClass)
-//    conf2.setJobName("MapReduceTask2")
-//    //conf2.set("fs.defaultFS", "hdfs://localhost:9000")
-//    //conf2.set("fs.defaultFS", "local")
-//    conf2.set("mapreduce.job.maps", "1")
-//    conf2.set("mapreduce.job.reduces", "1")
-//    conf2.set("mapred.textoutputformat.separator", ",");
-//    conf2.setMapperClass(classOf[TaskTwoMapperTwo])
-//    conf2.setReducerClass(classOf[TaskTwoReducerTwo])
-//    FileInputFormat.setInputPaths(conf2, new Path(outputPath+"_JOB1Output"))
-//    FileOutputFormat.setOutputPath(conf2, new Path(outputPath))
-//    JobClient.runJob(conf2)
