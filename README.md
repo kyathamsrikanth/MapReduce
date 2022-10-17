@@ -40,4 +40,4 @@ LogFileGenerator : https://github.com/0x1DOCD00D/CS441_Fall2022/blob/main/Homewo
 2. Sample Output Path - ```src/main/resources/output```
 3. Task Number - (1,2,3,4)
 
-
+How to build jar and deploy in AWS : https://youtu.be/FAYlrSSwcw0
