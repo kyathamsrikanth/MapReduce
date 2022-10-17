@@ -26,3 +26,18 @@ LogFileGenerator : https://github.com/0x1DOCD00D/CS441_Fall2022/blob/main/Homewo
 5. Using below Command to run the MapReduce Job
    ```hadoop jar <HDFSJARPath> <HDFSINPUTPATH> <HDFSOUTPUTPATH> <TaskNumber>```
 6. Check  Outputs ```hadoop fs -cat <HDFSoutputFilePath>```
+
+
+
+## Classes
+1. [TaskOneMapReduce.scala](src/main/scala/TaskOne/TaskOneMapReduce.scala)
+2. [TaskTwoMapReduce.scala](src/main/scala/TaskTwo/TaskTwoMapReduce.scala)
+3. [TaskThreeMapReduce.scala](src/main/scala/TaskThree/TaskThreeMapReduce.scala)
+4. [TaskFourMapReduce.scala](src/main/scala/TaskFour/TaskFourMapReduce.scala)
+
+### Parameters
+1. Sample Input file - [LogFileGenerator.2022-10-07.log](src/main/resources/input/LogFileGenerator.2022-10-07.log)
+2. Sample Output Path - ```src/main/resources/output```
+3. Task Number - (1,2,3,4)
+
+
