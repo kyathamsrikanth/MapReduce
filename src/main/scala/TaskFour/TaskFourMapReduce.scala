@@ -15,6 +15,20 @@ import java.io.IOException
 import java.util
 
 object TaskFourMapReduce :
+  /**
+   * Task 4 :  You will produce the number of characters in each log message for each log message type that
+   *  contain the highest number of characters in the detected instances of the designated regex pattern
+   *
+   * Mapper Algorithm :
+   *  1. Check if line contains LOG type defined in application conf
+   *  2. find the message in the log  line and count the no of characters which is the length of the string
+   *  3.  So Mapper Output => (LogType,CharactersCount)
+   *
+   * Reducer Algorithm :
+   *  1. Take Maximum of all the values for given logType
+   *  2. Output ==> (LogType,max)
+   *
+   */
   class TaskFourMapper extends MapReduceBase with Mapper[LongWritable, Text, Text, IntWritable] :
     private val logger = LoggerFactory.getLogger(getClass)
 
@@ -28,28 +42,6 @@ object TaskFourMapReduce :
 
   class TaskFourReducer extends MapReduceBase with Reducer[Text, IntWritable, Text, IntWritable] :
     override def reduce(key: Text, values: util.Iterator[IntWritable], output: OutputCollector[Text, IntWritable], reporter: Reporter): Unit =
-      val sum = values.asScala.reduce((valueOne, valueTwo) => new IntWritable(valueOne.get().max(valueTwo.get())))
-      output.collect(key, new IntWritable(sum.get()))
-
-//
-//  @main def runMapReduce(inputPath: String, outputPath: String) =
-//    val conf: JobConf = new JobConf(this.getClass)
-//    conf.setJobName("MapReduceTask4")
-//    //conf.set("fs.defaultFS", "hdfs://localhost:9000")
-//    //conf.set("fs.defaultFS", "local")
-//    conf.set("mapreduce.job.maps", "1")
-//    conf.set("mapreduce.job.reduces", "1")
-//    conf.set("mapred.textoutputformat.separator", ",");
-//    conf.setOutputKeyClass(classOf[Text])
-//    conf.setOutputValueClass(classOf[IntWritable])
-//    conf.setMapperClass(classOf[TaskFourMapper])
-//    conf.setCombinerClass(classOf[TaskFourReducer])
-//    conf.setReducerClass(classOf[TaskFourReducer])
-//    conf.setInputFormat(classOf[TextInputFormat])
-//    conf.setOutputFormat(classOf[TextOutputFormat[Text, IntWritable]])
-//    FileInputFormat.setInputPaths(conf, new Path(inputPath))
-//    FileOutputFormat.setOutputPath(conf, new Path(outputPath))
-//    JobClient.runJob(conf)
-
-
-
+      // Finding Maximum in all values
+      val maxCharactersCount = values.asScala.foldLeft(0){(maximum, value) => math.max(maximum, value.get)}
+      output.collect(key, new IntWritable(maxCharactersCount))

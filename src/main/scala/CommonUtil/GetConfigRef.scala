@@ -8,6 +8,10 @@ import java.util.Date
 import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
 
+/**
+ * GetConfigRef: Common methods used to fectch values from application Config
+ *
+ */
 object GetConfigRef :
   private val config = ConfigFactory.load()
   private val logger = LoggerFactory.getLogger(classOf[GetConfigRef.type])

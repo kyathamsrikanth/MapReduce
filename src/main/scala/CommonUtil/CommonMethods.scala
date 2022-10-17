@@ -8,16 +8,24 @@ import scala.util.matching.Regex
 
 object CommonMethods :
   /**
-   * Reduce Implementation: Aggregates mapper results and generates total number of ERROR, WARN, DEBUG and INFO logs.
+   * checkRegexPattern: Checks Regex Pattern and returns True if Found else False
    *
    * @param : line[String]
-   * @param values
-   * @param context
+   * @param :Regex[regexPattern]
+   * @return : Boolean
    */
   def checkRegexPattern(line: String, regexPattern: Regex): Boolean =
     regexPattern.findFirstIn(line).isDefined
   end checkRegexPattern
-  
+
+  /**
+   * checkTimeInterval: Checks if a given Time Stamp lies in between given Start and End Time Intervals
+   *
+   * @param :intervalStartTime[String]
+   * @param :intervalEndTime[ regexPattern]
+   * @param  :intervalEndTime[ regexPattern]
+   * @return : Boolean
+   */
   def checkTimeInterval(intervalStartTime: Date, intervalEndTime: Date, logTimeStamp: Date): Boolean =
     logTimeStamp.compareTo(intervalStartTime) >= 0 && intervalEndTime.compareTo(logTimeStamp) >= 0
   end checkTimeInterval
